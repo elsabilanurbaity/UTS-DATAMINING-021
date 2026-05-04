@@ -13,6 +13,14 @@ Repository ini berisi hasil pengerjaan UTS Data Mining dengan topik klasifikasi 
 
 ---
 
+## Pendahuluan
+Anggur merupakan salah satu minuman fermentasi yang kualitasnya sangat dipengaruhi oleh komposisi kimiawi yang terkandung di dalamnya. Penilaian kualitas anggur secara konvensional dilakukan oleh para ahli (sommelier) melalui uji organoleptik, yaitu penilaian berdasarkan rasa, aroma, dan penampilan. Metode ini bersifat subjektif dan membutuhkan keahlian khusus serta waktu yang tidak sedikit.
+
+Seiring berkembangnya ilmu data, pendekatan berbasis machine learning menawarkan cara yang lebih objektif dan efisien untuk memprediksi kualitas anggur. Dengan memanfaatkan data kimiawi seperti kadar alkohol, keasaman, dan kandungan sulfat, sebuah model klasifikasi dapat dilatih untuk mengenali pola yang membedakan anggur berkualitas tinggi dari yang berkualitas rendah.
+
+Proyek ini merupakan bagian dari UTS mata kuliah Data Mining. Pada proyek ini dibangun model klasifikasi menggunakan algoritma Random Forest untuk memprediksi nilai kualitas anggur berdasarkan 11 fitur kimiawi. Dataset yang digunakan merupakan gabungan data anggur merah dan putih dari berbagai sampel dengan label kualitas yang diberikan oleh para ahli wine tasting.
+
+
 ## Struktur Repository
 
 ```
@@ -93,12 +101,25 @@ Setelah scaling, semua fitur memiliki mean mendekati 0 dan standar deviasi mende
 ### Langkah 5 — Pembuatan Model
 
 Model yang dipilih adalah **Random Forest Classifier** dengan konfigurasi:
-- `n_estimators = 300`: Dibangun 300 pohon keputusan
-- `max_depth = None`: Pohon tumbuh penuh tanpa batas kedalaman
-- `min_samples_split = 2`: Minimum 2 sampel untuk pemisahan node
-- `random_state = 42`: Seed untuk reproduktivitas
 
-Random Forest dipilih karena kemampuannya menangani permasalahan klasifikasi multi-kelas, ketahanannya terhadap overfitting dibanding single decision tree, dan kemampuannya memberikan informasi feature importance.
+Random Forest adalah metode ensemble yang bekerja dengan membangun sejumlah pohon keputusan (decision tree) secara paralel pada subset data dan subset fitur yang dipilih secara acak (bootstrap sampling). Prediksi final ditentukan melalui voting mayoritas dari seluruh pohon.
+
+Alasan pemilihan Random Forest:
+- Mampu menangani permasalahan klasifikasi multi-kelas dengan baik
+- Lebih tahan terhadap overfitting dibandingkan single decision tree
+- Tidak memerlukan asumsi distribusi data tertentu
+- Memberikan informasi feature importance yang dapat diinterpretasikan
+- Robust terhadap outlier dan noise dalam data
+
+Konfigurasi hyperparameter yang digunakan:
+
+| Hyperparameter | Nilai | Alasan |
+|---|---|---|
+| n_estimators | 300 | Jumlah pohon yang cukup besar untuk stabilitas prediksi |
+| max_depth | None | Pohon tumbuh penuh tanpa batasan kedalaman |
+| min_samples_split | 2 | Minimum 2 sampel untuk melakukan split pada node |
+| random_state | 42 | Seed tetap untuk memastikan reproduktivitas hasil |
+| n_jobs | -1 | Menggunakan seluruh core CPU yang tersedia |
 
 ### Langkah 6 — Evaluasi Model
 
@@ -108,6 +129,9 @@ Evaluasi dilakukan dengan dua cara:
 Model mampu mengklasifikasikan seluruh data training dengan sempurna. Nilai ini wajar karena Random Forest dilatih pada data yang sama.
 
 **5-Fold Stratified Cross-Validation**:
+
+Untuk mendapatkan estimasi performa yang lebih realistis, digunakan Stratified K-Fold Cross-Validation dengan 5 fold. Stratified dipilih agar setiap fold mempertahankan proporsi kelas yang sama dengan distribusi keseluruhan.
+
 | Fold | Akurasi |
 |---|---|
 | Fold 1 | 57.56% |
@@ -135,11 +159,13 @@ Rata-rata cross-validation accuracy sebesar 64.42% merupakan estimasi performa y
 | residual sugar | 0.0672 |
 | free sulfur dioxide | 0.0670 |
 
-Tiga fitur paling berpengaruh adalah `alcohol`, `sulphates`, dan `volatile acidity`.
+Tiga fitur paling berpengaruh adalah `alcohol` (0.1424), `sulphates` (0.1165), dan `volatile acidity` (0.1122). Distribusi importance yang relatif merata antar fitur menunjukkan bahwa tidak ada satu fitur pun yang sangat mendominasi, dan model memanfaatkan kombinasi informasi dari semua fitur untuk membuat prediksi.
 
 ### Langkah 7 — Prediksi Data Testing
 
-Model diterapkan pada 286 data testing. Distribusi hasil prediksi:
+Setelah model dievaluasi dan dinilai memadai, model diterapkan pada 286 data testing menggunakan fitur yang sudah dinormalisasi dengan parameter scaler dari data training.
+
+Distribusi hasil prediksi:
 - Quality 5: 132 data (46.2%)
 - Quality 6: 125 data (43.7%)
 - Quality 7: 29 data (10.1%)
@@ -166,6 +192,55 @@ Hasil prediksi disimpan dalam file `hasilprediksi_021.csv` yang hanya memuat dua
 | Jumlah Data Testing | 286 |
 
 ---
+
+---
+
+## Analisis dan Pembahasan
+
+### Performa Model
+
+Model Random Forest yang dibangun menunjukkan akurasi cross-validation sebesar 64.42% pada data training. Nilai ini perlu diinterpretasikan dalam konteks permasalahannya. Dataset Wine Quality adalah permasalahan klasifikasi multi-kelas dengan 6 kelas berbeda (quality 3 hingga 8), di mana distribusi kelasnya sangat tidak merata. Kelas mayoritas (quality 5 dan 6) menyumbang sekitar 82% dari total data, sementara kelas minoritas (quality 3 dan 8) masing-masing hanya memiliki 6 dan 13 sampel.
+
+Sebagai baseline perbandingan, jika model hanya menebak kelas yang paling sering muncul (quality 5) untuk semua prediksi, akurasi yang diperoleh hanya sekitar 42.2%. Dengan demikian, akurasi 64.42% menunjukkan bahwa model berhasil mempelajari pola yang bermakna dari data, jauh di atas baseline tersebut.
+
+### Keterbatasan Model
+
+Ada beberapa keterbatasan yang perlu diperhatikan dari model yang dibangun:
+
+Pertama, model tidak menghasilkan prediksi untuk kelas 3, 4, dan 8 pada data testing. Hal ini disebabkan oleh jumlah sampel yang sangat sedikit untuk kelas-kelas tersebut pada data training, sehingga model belum memiliki cukup contoh untuk mengenali pola kelas minoritas secara andal.
+
+Kedua, akurasi training yang mencapai 100% menunjukkan bahwa model mengalami overfitting terhadap data training. Perbedaan yang cukup besar antara akurasi training (100%) dan cross-validation (64.42%) mengindikasikan bahwa model sangat menghafal data training dan belum sepenuhnya mampu menggeneralisasi.
+
+Ketiga, sifat subjektif dari label kualitas anggur yang diberikan oleh penilai manusia turut berkontribusi pada noise dalam data, sehingga batasan antar kelas tidak selalu jelas dan konsisten.
+
+### Potensi Peningkatan
+
+Beberapa pendekatan yang berpotensi meningkatkan performa model antara lain menerapkan teknik oversampling seperti SMOTE untuk menangani class imbalance, melakukan hyperparameter tuning menggunakan GridSearchCV atau RandomizedSearchCV, mencoba algoritma lain seperti XGBoost atau LightGBM, serta mempertimbangkan penggabungan kelas yang berdekatan (misalnya quality 3 dan 4 digabung menjadi satu kelas "rendah") untuk menyederhanakan permasalahan klasifikasi.
+
+---
+
+## Kesimpulan
+
+Berdasarkan seluruh tahapan yang telah dilakukan, dapat ditarik beberapa kesimpulan sebagai berikut:
+
+1. Dataset Wine Quality dalam kondisi bersih tanpa missing values maupun duplikasi, sehingga tidak diperlukan penanganan khusus pada tahap pembersihan data. Namun dataset memiliki ketidakseimbangan kelas yang cukup signifikan antara kelas mayoritas dan minoritas.
+
+2. Model Random Forest Classifier berhasil dibangun dengan konfigurasi 300 estimator dan normalisasi StandardScaler. Model mencapai rata-rata cross-validation accuracy sebesar 64.42% dengan standar deviasi 0.0377, yang menunjukkan performa yang cukup konsisten dan berada jauh di atas baseline acak.
+
+3. Dari analisis feature importance, kadar alkohol (`alcohol`) terbukti menjadi faktor paling berpengaruh dalam menentukan kualitas anggur, diikuti oleh kandungan sulfat (`sulphates`) dan keasaman volatil (`volatile acidity`). Temuan ini konsisten dengan literatur di bidang enologi yang menyatakan bahwa ketiga komponen tersebut memang berperan penting dalam menentukan profil rasa dan kualitas anggur secara keseluruhan.
+
+4. Model berhasil menghasilkan prediksi untuk seluruh 286 data testing dengan distribusi yang konsisten terhadap pola distribusi data training, yaitu didominasi oleh kelas 5 (46.2%), diikuti kelas 6 (43.7%), dan kelas 7 (10.1%).
+
+5. Pendekatan machine learning terbukti mampu menangkap pola dari data kimiawi anggur untuk melakukan klasifikasi kualitas secara otomatis, meski masih terdapat ruang yang cukup besar untuk peningkatan, terutama dalam menangani kelas-kelas minoritas.
+
+---
+
+## Referensi
+
+- Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. Decision Support Systems, 47(4), 547–553.
+- Breiman, L. (2001). Random Forests. Machine Learning, 45(1), 5–32.
+- Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 12, 2825–2830.
+- Dataset Wine Quality: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/wine+quality)
 
 ## Cara Menjalankan Notebook
 
