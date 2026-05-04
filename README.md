@@ -16,7 +16,7 @@ Repository ini berisi hasil pengerjaan UTS Data Mining dengan topik klasifikasi 
 ## Struktur Repository
 
 ```
-├── UTS_DataMining_WineQuality.ipynb    # Notebook analisis lengkap dengan interpretasi
+├── UTS_DataMining_WineQuality_021.ipynb    # Notebook analisis lengkap dengan interpretasi
 ├── hasilprediksi_021.csv               # File hasil prediksi (Id + quality)
 └── README.md                           # Dokumentasi proyek ini
 ```
@@ -170,7 +170,7 @@ Hasil prediksi disimpan dalam file `hasilprediksi_3digitNIMterakhir.csv` yang ha
 ## Cara Menjalankan Notebook
 
 1. Buka Google Colab di [colab.research.google.com](https://colab.research.google.com)
-2. Upload file `UTS_DataMining_WineQuality.ipynb`
+2. Upload file `UTS_DataMining_WineQuality_021.ipynb`
 3. Jalankan cell pertama untuk mengimpor library
 4. Upload `data_training.csv` dan `data_testing.csv` ketika diminta
 5. Jalankan seluruh cell secara berurutan
