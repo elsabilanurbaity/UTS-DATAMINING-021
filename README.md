@@ -193,29 +193,11 @@ Hasil prediksi disimpan dalam file `hasilprediksi_021.csv` yang hanya memuat dua
 
 ---
 
----
-
-## Analisis dan Pembahasan
-
 ### Performa Model
 
 Model Random Forest yang dibangun menunjukkan akurasi cross-validation sebesar 64.42% pada data training. Nilai ini perlu diinterpretasikan dalam konteks permasalahannya. Dataset Wine Quality adalah permasalahan klasifikasi multi-kelas dengan 6 kelas berbeda (quality 3 hingga 8), di mana distribusi kelasnya sangat tidak merata. Kelas mayoritas (quality 5 dan 6) menyumbang sekitar 82% dari total data, sementara kelas minoritas (quality 3 dan 8) masing-masing hanya memiliki 6 dan 13 sampel.
 
 Sebagai baseline perbandingan, jika model hanya menebak kelas yang paling sering muncul (quality 5) untuk semua prediksi, akurasi yang diperoleh hanya sekitar 42.2%. Dengan demikian, akurasi 64.42% menunjukkan bahwa model berhasil mempelajari pola yang bermakna dari data, jauh di atas baseline tersebut.
-
-### Keterbatasan Model
-
-Ada beberapa keterbatasan yang perlu diperhatikan dari model yang dibangun:
-
-Pertama, model tidak menghasilkan prediksi untuk kelas 3, 4, dan 8 pada data testing. Hal ini disebabkan oleh jumlah sampel yang sangat sedikit untuk kelas-kelas tersebut pada data training, sehingga model belum memiliki cukup contoh untuk mengenali pola kelas minoritas secara andal.
-
-Kedua, akurasi training yang mencapai 100% menunjukkan bahwa model mengalami overfitting terhadap data training. Perbedaan yang cukup besar antara akurasi training (100%) dan cross-validation (64.42%) mengindikasikan bahwa model sangat menghafal data training dan belum sepenuhnya mampu menggeneralisasi.
-
-Ketiga, sifat subjektif dari label kualitas anggur yang diberikan oleh penilai manusia turut berkontribusi pada noise dalam data, sehingga batasan antar kelas tidak selalu jelas dan konsisten.
-
-### Potensi Peningkatan
-
-Beberapa pendekatan yang berpotensi meningkatkan performa model antara lain menerapkan teknik oversampling seperti SMOTE untuk menangani class imbalance, melakukan hyperparameter tuning menggunakan GridSearchCV atau RandomizedSearchCV, mencoba algoritma lain seperti XGBoost atau LightGBM, serta mempertimbangkan penggabungan kelas yang berdekatan (misalnya quality 3 dan 4 digabung menjadi satu kelas "rendah") untuk menyederhanakan permasalahan klasifikasi.
 
 ---
 
