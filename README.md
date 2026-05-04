@@ -148,7 +148,7 @@ Distribusi ini konsisten dengan pola pada data training.
 
 ### Langkah 8 — Penyimpanan Hasil
 
-Hasil prediksi disimpan dalam file `hasilprediksi_3digitNIMterakhir.csv` yang hanya memuat dua kolom: `Id` dan `quality`.
+Hasil prediksi disimpan dalam file `hasilprediksi_021.csv` yang hanya memuat dua kolom: `Id` dan `quality`.
 
 ---
 
