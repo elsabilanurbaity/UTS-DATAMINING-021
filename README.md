@@ -17,8 +17,8 @@ Repository ini berisi hasil pengerjaan UTS Data Mining dengan topik klasifikasi 
 
 ```
 ├── UTS_DataMining_WineQuality_021.ipynb    # Notebook analisis lengkap dengan interpretasi
-├── hasilprediksi_021.csv               # File hasil prediksi (Id + quality)
-└── README.md                           # Dokumentasi proyek ini
+├── hasilprediksi_021.csv                   # File hasil prediksi (Id + quality)
+└── README.md                               # Dokumentasi proyek ini
 ```
 
 ---
