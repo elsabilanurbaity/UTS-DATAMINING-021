@@ -1,8 +1,8 @@
 # UTS Data Mining — Klasifikasi Kualitas Anggur (Wine Quality Classification)
 
-**Nama**: [Nama Anda]  
-**NIM**: [NIM Anda]  
-**Kelas**: [Kelas Anda]  
+**Nama**: Elsabila Nurbaity  
+**NIM**: 2304020021  
+**Rombel**: 1 PMAT 23  
 **Mata Kuliah**: Data Mining
 
 ---
@@ -17,7 +17,7 @@ Repository ini berisi hasil pengerjaan UTS Data Mining dengan topik klasifikasi 
 
 ```
 ├── UTS_DataMining_WineQuality.ipynb    # Notebook analisis lengkap dengan interpretasi
-├── hasilprediksi_3digitNIMterakhir.csv # File hasil prediksi (Id + quality)
+├── hasilprediksi_021.csv               # File hasil prediksi (Id + quality)
 └── README.md                           # Dokumentasi proyek ini
 ```
 
